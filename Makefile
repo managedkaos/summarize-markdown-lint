@@ -29,7 +29,7 @@ test:
 build: pip lint
 	docker build --tag $(APP):$(TAG) .
 
-docker_test:
+docker-test:
 	cat tests/sample.txt | docker run --interactive $(DOCKER_REPO)/$(APP):main
 
 clean:
