@@ -94,5 +94,6 @@ jobs:
   test-image:
     needs: build
     runs-on: ubuntu-latest
-    - name: Test the newly built image
-      run: make docker-test
+    steps:
+      - name: Test the newly built image
+        run: make docker-test
