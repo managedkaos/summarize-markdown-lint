@@ -24,11 +24,13 @@ black:
 	black *.py
 
 test:
-	@echo "TODO: Remove the ignore flag for the test command"
-	-python -m unittest --verbose --failfast
+	python -m unittest discover --verbose --failfast -s tests
 
 build: pip lint
 	docker build --tag $(APP):$(TAG) .
+
+docker_test:
+	cat tests/sample.txt | docker run --interactive $(DOCKER_REPO)/$(APP):main
 
 clean:
 	docker container stop $(APP) || true
