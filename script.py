@@ -11,13 +11,13 @@ def summarize_linting_output_by_error(linting_output):
     Summarize linting output by error.
     """
     errors_summary = defaultdict(list)
-    pattern = re.compile(r"^(.*?):(\d+)(?::(\d+))? (?:\w+ )?(MD\d+/\S+) (.*)$")
+    pattern = re.compile(r"^(.*?):(\d+)(?::\d+)? (?:\w+ )?(MD\d+/\S+) (.*)$")
 
     lines = linting_output.strip().split("\n")
     for line in lines:
         match = pattern.match(line)
         if match:
-            file_path, line_number, col_number, error_code, message = match.groups()
+            file_path, line_number, error_code, message = match.groups()
             location = f"{file_path}:{line_number}: Line {line_number}"
             errors_summary[f"{error_code} - {message}"].append(location)
 
@@ -35,13 +35,13 @@ def summarize_linting_output_by_file(linting_output):
     Summarize linting output by file.
     """
     errors_by_file = defaultdict(list)
-    pattern = re.compile(r"^(.*?):(\d+)(?::(\d+))? (?:\w+ )?(MD\d+/\S+) (.*)$")
+    pattern = re.compile(r"^(.*?):(\d+)(?::\d+)? (?:\w+ )?(MD\d+/\S+) (.*)$")
 
     lines = linting_output.strip().split("\n")
     for line in lines:
         match = pattern.match(line)
         if match:
-            file_path, line_number, col_number, error_code, message = match.groups()
+            file_path, line_number, error_code, message = match.groups()
             location = f"Line {line_number}"
             errors_by_file[file_path].append(f"{location}: {error_code} - {message}")
 
