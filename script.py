@@ -11,7 +11,7 @@ def summarize_linting_output_by_error(linting_output):
     Summarize linting output by error.
     """
     errors_summary = defaultdict(list)
-    pattern = re.compile(r"^(.*?):(\d+)(?::(\d+))? (MD\d+/\S+) (.*)$")
+    pattern = re.compile(r"^(.*?):(\d+)(?::(\d+))? (?:\w+ )?(MD\d+/\S+) (.*)$")
 
     lines = linting_output.strip().split("\n")
     for line in lines:
@@ -35,7 +35,7 @@ def summarize_linting_output_by_file(linting_output):
     Summarize linting output by file.
     """
     errors_by_file = defaultdict(list)
-    pattern = re.compile(r"^(.*?):(\d+)(?::(\d+))? (MD\d+/\S+) (.*)$")
+    pattern = re.compile(r"^(.*?):(\d+)(?::(\d+))? (?:\w+ )?(MD\d+/\S+) (.*)$")
 
     lines = linting_output.strip().split("\n")
     for line in lines:
