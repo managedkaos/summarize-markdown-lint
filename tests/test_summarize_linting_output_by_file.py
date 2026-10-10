@@ -22,7 +22,7 @@ ch1_pipelines/01_01_create_a_pipeline/README.md:14 MD022/blanks-around-headings 
             script.summarize_linting_output_by_file(script.read_input())
             output = mock_stdout.getvalue()
             expected_output = """\
-## By File
+## By file
 ### ch0_intro/00_01_introduction/README.md
 - [ ] Line 15: MD012/no-multiple-blanks - Multiple consecutive blank lines [Expected: 1; Actual: 2]
 

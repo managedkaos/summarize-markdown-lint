@@ -24,10 +24,10 @@ ch1_pipelines/01_01_create_a_pipeline/README.md:14 MD022/blanks-around-headings 
             expected_output = """\
 ## By Error
 ### MD012/no-multiple-blanks - Multiple consecutive blank lines [Expected: 1; Actual: 2]
-- [ ] ch0_intro/00_01_introduction/README.md: Line 15
+- [ ] ch0_intro/00_01_introduction/README.md:15: Line 15
 
 ### MD022/blanks-around-headings - Headings should be surrounded by blank lines [Expected: 1; Actual: 0; Below] [Context: "## Versions for `default-image`"]
-- [ ] ch1_pipelines/01_01_create_a_pipeline/README.md: Line 14
+- [ ] ch1_pipelines/01_01_create_a_pipeline/README.md:14: Line 14
 
 """
             self.assertEqual(output, expected_output)
