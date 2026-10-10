@@ -1,9 +1,37 @@
 """
 Summarize linting output by error and by file.
 """
+
 import sys
 import re
 from collections import defaultdict
+
+
+def _split_message_details(message):
+    """Split a markdownlint message into summary text and bracketed details."""
+    base_message = message.split(" [", 1)[0]
+    details = re.findall(r"\[[^\]]+\]", message)
+    return base_message, details
+
+
+def _error_group_heading(error_code, message):
+    """Build a stable by-error heading for a markdownlint rule."""
+    base_message, _ = _split_message_details(message)
+    return f"{error_code} - {base_message}"
+
+
+def _format_occurrence_details(message):
+    """Format per-occurrence bracket details for checklist lines."""
+    _, details = _split_message_details(message)
+    return " ".join(details)
+
+
+def _error_sort_key(error_heading):
+    """Sort by markdown rule number, then heading text."""
+    match = re.match(r"^MD(\d+)", error_heading)
+    if match:
+        return (int(match.group(1)), error_heading)
+    return (float("inf"), error_heading)
 
 
 def summarize_linting_output_by_error(linting_output):
@@ -19,11 +47,15 @@ def summarize_linting_output_by_error(linting_output):
         if match:
             file_path, line_number, error_code, message = match.groups()
             location = f"{file_path}:{line_number}: Line {line_number}"
-            errors_summary[f"{error_code} - {message}"].append(location)
+            occurrence_details = _format_occurrence_details(message)
+            if occurrence_details:
+                location = f"{location} {occurrence_details}"
+            errors_summary[_error_group_heading(error_code, message)].append(location)
 
-    print("## By Error")
+    print("## By Error\n")
 
-    for error, occurrences in errors_summary.items():
+    for error in sorted(errors_summary.keys(), key=_error_sort_key):
+        occurrences = errors_summary[error]
         print(f"### {error}")
         for occurrence in occurrences:
             print(f"- [ ] {occurrence}")
@@ -45,7 +77,7 @@ def summarize_linting_output_by_file(linting_output):
             location = f"Line {line_number}"
             errors_by_file[file_path].append(f"{location}: {error_code} - {message}")
 
-    print("## By file")
+    print("## By file\n")
 
     for file_path, errors in errors_by_file.items():
         print(f"### {file_path}")
@@ -75,7 +107,7 @@ def read_input():
 
 
 if __name__ == "__main__":
-    print("# Linting Summary")
+    print("# Linting Summary\n")
     linting_output = read_input()
     summarize_linting_output_by_file(linting_output)
     summarize_linting_output_by_error(linting_output)

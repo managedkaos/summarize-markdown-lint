@@ -29,6 +29,7 @@ ch1_pipelines/01_01_create_a_pipeline/README.md:14:1 error MD022/blanks-around-h
             output = mock_stdout.getvalue()
             expected_output = """\
 ## By file
+
 ### ch0_intro/00_01_introduction/README.md
 - [ ] Line 15: MD012/no-multiple-blanks - Multiple consecutive blank lines [Expected: 1; Actual: 2]
 
@@ -48,6 +49,7 @@ ch1_pipelines/01_01_create_a_pipeline/README.md:14:1 error MD022/blanks-around-h
             output = mock_stdout.getvalue()
             expected_output = """\
 ## By file
+
 ### ch0_intro/00_01_introduction/README.md
 - [ ] Line 15: MD012/no-multiple-blanks - Multiple consecutive blank lines [Expected: 1; Actual: 2]
 
