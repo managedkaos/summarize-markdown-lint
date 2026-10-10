@@ -64,7 +64,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
   create-release:
-    needs: lint-and-test
+    needs: [lint-and-test, build-and-push-image]
     runs-on: ubuntu-latest
     permissions:
       contents: write
