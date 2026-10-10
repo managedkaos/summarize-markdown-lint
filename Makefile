@@ -24,7 +24,7 @@ test: ## Run the test suite
 build: pip lint ## Build the Docker image
 	docker build --tag $(APP):$(TAG) .
 
-docker-test: test build ## Run tests, build image, and check sample input
+docker-test: requirements test build ## Run tests, build image, and check sample input
 	cat tests/sample.txt | docker run --interactive $(APP):$(TAG)
 
 clean: ## Remove containers and caches
