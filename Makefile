@@ -3,36 +3,31 @@ TAG = $(shell echo "$$(date +%F)-$$(git rev-parse --short HEAD)")
 DOCKER_REPO = ghcr.io/managedkaos
 
 
-help:
-	@echo "Run make <target> where target is one of the following..."
-	@echo
-	@echo "    pip         - install required libraries"
-	@echo "    lint        - run flake8 and pylint"
-	@echo "    build       - build docker container"
-	@echo "    clean       - stop local container, clean up workspace"
+help: ## Display available targets
+	@awk 'BEGIN {FS = ":.*## "}; /^[a-zA-Z0-9_-]+:.*## / {printf "\033[36m%-28s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-requirements:
+requirements: ## Install Python dependencies
 	pip install --upgrade pip
 	pip install --quiet --upgrade --requirement requirements.txt
 
-lint:
+lint: ## Run static checks
 	flake8 --ignore=E501,E231 *.py
 	pylint --errors-only --disable=C0301 *.py
 	black --diff *.py
 
-black:
+black: ## Format Python files
 	black *.py
 
-test:
+test: ## Run the test suite
 	python -m unittest discover --verbose --failfast -s tests
 
-build: pip lint
+build: pip lint ## Build the Docker image
 	docker build --tag $(APP):$(TAG) .
 
-docker-test:
-	cat tests/sample.txt | docker run --interactive $(DOCKER_REPO)/$(APP):main
+docker-test: requirements test build ## Run tests, build image, and check sample input
+	cat tests/sample.txt | docker run --interactive $(APP):$(TAG)
 
-clean:
+clean: ## Remove containers and caches
 	docker container stop $(APP) || true
 	docker container rm $(APP) || true
 	@rm -rf ./__pycache__ ./tests/__pycache__

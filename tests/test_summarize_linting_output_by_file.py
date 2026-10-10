@@ -12,6 +12,12 @@ class TestSummarizeLintByFile(unittest.TestCase):
 ch0_intro/00_01_introduction/README.md:15 MD012/no-multiple-blanks Multiple consecutive blank lines [Expected: 1; Actual: 2]
 ch1_pipelines/01_01_create_a_pipeline/README.md:14 MD022/blanks-around-headings Headings should be surrounded by blank lines [Expected: 1; Actual: 0; Below] [Context: "## Versions for `default-image`"]
 """
+        self.test_content_with_severity = """\
+Linting: 2 files
+Summary: 2 issues in 2 files
+ch0_intro/00_01_introduction/README.md:15:1 error MD012/no-multiple-blanks Multiple consecutive blank lines [Expected: 1; Actual: 2]
+ch1_pipelines/01_01_create_a_pipeline/README.md:14:1 error MD022/blanks-around-headings Headings should be surrounded by blank lines [Expected: 1; Actual: 0; Below] [Context: "## Versions for `default-image`"]
+"""
 
     @patch('sys.stdin', new_callable=StringIO)
     def test_summarize_lint_by_file_from_stdin(self, mock_stdin):
@@ -22,7 +28,28 @@ ch1_pipelines/01_01_create_a_pipeline/README.md:14 MD022/blanks-around-headings 
             script.summarize_linting_output_by_file(script.read_input())
             output = mock_stdout.getvalue()
             expected_output = """\
-## By File
+## By file
+
+### ch0_intro/00_01_introduction/README.md
+- [ ] Line 15: MD012/no-multiple-blanks - Multiple consecutive blank lines [Expected: 1; Actual: 2]
+
+### ch1_pipelines/01_01_create_a_pipeline/README.md
+- [ ] Line 14: MD022/blanks-around-headings - Headings should be surrounded by blank lines [Expected: 1; Actual: 0; Below] [Context: "## Versions for `default-image`"]
+
+"""
+            self.assertEqual(output, expected_output)
+
+    @patch('sys.stdin', new_callable=StringIO)
+    def test_summarize_lint_by_file_with_severity_keyword(self, mock_stdin):
+        mock_stdin.write(self.test_content_with_severity)
+        mock_stdin.seek(0)
+        with patch('sys.stdout', new_callable=StringIO) as mock_stdout:
+            script.read_input = lambda: sys.stdin.read()
+            script.summarize_linting_output_by_file(script.read_input())
+            output = mock_stdout.getvalue()
+            expected_output = """\
+## By file
+
 ### ch0_intro/00_01_introduction/README.md
 - [ ] Line 15: MD012/no-multiple-blanks - Multiple consecutive blank lines [Expected: 1; Actual: 2]
 
