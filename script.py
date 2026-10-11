@@ -106,8 +106,16 @@ def read_input():
     return linting_output
 
 
+def has_lint_errors(linting_output):
+    """Return True if the linting output contains any parseable errors."""
+    pattern = re.compile(r"^(.*?):(\d+)(?::\d+)? (?:\w+ )?(MD\d+/\S+) (.*)$")
+    return any(pattern.match(line) for line in linting_output.strip().split("\n"))
+
+
 if __name__ == "__main__":
-    print("# Linting Summary\n")
     linting_output = read_input()
+    if not has_lint_errors(linting_output):
+        sys.exit(0)
+    print("# Linting Summary\n")
     summarize_linting_output_by_file(linting_output)
     summarize_linting_output_by_error(linting_output)
