@@ -1,0 +1,29 @@
+name: Close External Pull Requests
+
+on:
+  pull_request_target:
+    types: [opened]
+
+jobs:
+  close-external-pr:
+    if: github.event.pull_request.user.login != 'managedkaos'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Close PR with a message
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: "Thank you for your interest in this project! Unfortunately, pull requests from external contributors are not accepted at this time. We appreciate your enthusiasm and encourage you to use the project as-is or fork it for your own needs."
+            });
+            await github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+              state: 'closed'
+            });
